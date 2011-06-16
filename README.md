@@ -1,7 +1,9 @@
 ## Usage:
 
-./dumpDatabase.sh <databaseName>
-./restoreDatabase.sh <oldDatabaseName> <newDatabaseName>
+./dumpDatabase.sh \<databaseName\>
+
+./restoreDatabase.sh \<oldDatabaseName\> \<newDatabaseName\>
+
 
 ## Description
 
