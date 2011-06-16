@@ -7,9 +7,21 @@
  # @date        2011-05-23
  ##
 
-mysql $2 < $1"Schema.sql"
+mysql $2 < $1".schema.sql" 2> $1".error.log"
 
-for table in $1"Data.sql"/*
+cd $1".data"
+
+for table in *".txt"
 	do
-		mysql $2 < $table &
+		if [ -s $table ]; then
+			mysql --execute "Set unique_checks = 0;
+					Set foreign_key_checks = 0;
+					Set autocommit = 0;
+					Load data inFile '"$(pwd)"/"$table"' into table "${table%.txt}";
+					Commit;
+					Set foreign_key_checks = 1;
+					Set unique_checks = 1;" $2 2> $1".error.log" &
+		fi
 	done
+
+exit 0
