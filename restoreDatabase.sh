@@ -14,11 +14,7 @@ cd $1".data"
 for table in *".txt"
 	do
 		if [ -s $table ]; then
-			mysql --execute "Set unique_checks = 0;
-					Set foreign_key_checks = 0;
-					Load data inFile '"$(pwd)"/"$table"' into table "${table%.txt}";
-					Set foreign_key_checks = 1;
-					Set unique_checks = 1;" $2 2> $1".error.log" &
+			mysql --execute "Load data inFile '"$(pwd)"/"$table"' into table "${table%.txt}"; $2 2> $1".error.log" &
 		fi
 	done
 
