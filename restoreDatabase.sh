@@ -16,9 +16,7 @@ for table in *".txt"
 		if [ -s $table ]; then
 			mysql --execute "Set unique_checks = 0;
 					Set foreign_key_checks = 0;
-					Set autocommit = 0;
 					Load data inFile '"$(pwd)"/"$table"' into table "${table%.txt}";
-					Commit;
 					Set foreign_key_checks = 1;
 					Set unique_checks = 1;" $2 2> $1".error.log" &
 		fi
