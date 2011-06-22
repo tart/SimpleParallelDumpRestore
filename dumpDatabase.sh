@@ -7,6 +7,10 @@
  # @date        2011-05-23
  ##
 
+echo "Dump started." > $1".dump.log"
+date --rfc-3339=ns >> $1".dump.log"
+echo >> $1".dump.log"
+
 echo "Dumping schema to \""$1".schema.sql\"..." >> $1".dump.log"
 echo "Dumping schema to \""$1".schema.sql\"..."
 ( time mysqldump --no-data --routines $1 > $1".schema.sql" 2>> $1".dump.log" ) 2>> $1".dump.log"

@@ -7,6 +7,10 @@
  # @date        2011-05-23
  ##
 
+echo "Restore started." > $1".restore.log"
+date --rfc-3339=ns >> $1".restore.log"
+echo >> $1".restore.log"
+
 echo "Restoring schema from \""$1".schema.sql\" to "$2" database..." >> $1".restore.log"
 echo "Restoring schema from \""$1".schema.sql\" to "$2" database..."
 ( time mysql $2 < $1".schema.sql" 2>> $1".restore.log" ) 2>> $1".restore.log"
