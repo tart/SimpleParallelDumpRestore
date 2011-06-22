@@ -17,7 +17,7 @@ tables=$(mysql --execute "Show full tables where Table_type = 'BASE TABLE';" $1 
 		sed "s/\tBASE TABLE//;")
 for table in $tables
 	do
-		mysqldump --no-create-info --tab $1".data" $1 $table 2> $1".error.log" &
+		mysql --execute "Select SQL_NO_CACHE * from "$table" into outFile '"$(pwd)"/"$1".data/"$table"'" $1 2> $1".error.log" &
 	done
 
 exit 0
