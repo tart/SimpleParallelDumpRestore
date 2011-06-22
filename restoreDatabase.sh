@@ -7,14 +7,14 @@
  # @date        2011-05-23
  ##
 
-mysql $2 < $1".schema.sql" 2> $1".error.log"
+mysql $2 < $1".schema.sql" 2>> $1".restore.log"
 
 cd $1".data"
 
 for table in *
 	do
 		if [ -s $table ]; then
-			mysql --execute "Load data inFile '"$(pwd)"/"$table"' into table "$table"; $2 2> $1".error.log" &
+			mysql --execute "Load data inFile '"$(pwd)"/"$table"' into table "$table"; $2 2>> $1".restore.log" &
 		fi
 	done
 
