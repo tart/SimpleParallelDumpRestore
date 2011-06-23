@@ -23,7 +23,10 @@ cd $1".data"
 for table in *
 	do
 		if [ -s $table ]; then
-			mysql --execute "Load data inFile '"$(pwd)"/"$table"' into table "$table $2 2>> $1".restore.log" &
+			mysql --execute "Set unique_checks = 0;
+					Set foreign_key_checks = 0;
+					Set autocommit = 0;
+					Load data inFile '"$(pwd)"/"$table"' into table "$table $2 2>> $1".restore.log" &
 		fi
 	done
 
