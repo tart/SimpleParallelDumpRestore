@@ -24,7 +24,8 @@ for table in $1".data"/*
 			mysql --execute "Set unique_checks = 0;
 					Set foreign_key_checks = 0;
 					Set autocommit = 0;
-					Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"} $2 2>> $1".restore.log" &
+					Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"}";
+					Commit;" $2 2>> $1".restore.log" &
 		fi
 	done
 
