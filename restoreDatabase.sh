@@ -18,15 +18,13 @@ echo >> $1".restore.log"
 
 echo "Restoring data from \""$1".data\" to "$2" database..." >> $1".restore.log"
 echo "Restoring data from \""$1".data\" to "$2" database..."
-cd $1".data"
-
 for table in *
 	do
 		if [ -s $table ]; then
 			mysql --execute "Set unique_checks = 0;
 					Set foreign_key_checks = 0;
 					Set autocommit = 0;
-					Load data inFile '"$(pwd)"/"$table"' into table "$table $2 2>> $1".restore.log" &
+					Load data inFile '"$(pwd)"/"$1".data/"$table"' into table "$table $2 2>> $1".restore.log" &
 		fi
 	done
 
