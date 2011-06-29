@@ -7,6 +7,11 @@
  # @date        2011-05-23
  ##
 
+if [ -e $1".schema.sql" ]; then
+	echo $1".schema.sql file exists."
+	exit 1
+fi
+
 echo "Dump started." > $1".dump.log"
 date --rfc-3339=ns >> $1".dump.log"
 echo >> $1".dump.log"
