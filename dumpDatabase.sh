@@ -12,20 +12,21 @@ if [ -e $1".schema.sql" ]; then
 	exit 1
 fi
 
-echo "Dump started." > $1".dump.log"
-date --rfc-3339=ns >> $1".dump.log"
+echo "Dump started:" > $1".dump.log"
+date +%s >> $1".dump.log"
 echo >> $1".dump.log"
 
-echo "Dumping schema to \""$1".schema.sql\"..." >> $1".dump.log"
 echo "Dumping schema to \""$1".schema.sql\"..."
-( time mysqldump --no-data --routines $1 > $1".schema.sql" 2>> $1".dump.log" ) 2>> $1".dump.log"
+mysqldump --no-data --routines $1 > $1".schema.sql" 2>> $1".dump.log"
+
+echo "Schema dumped:" >: $1".dump.log"
+date +%s >> $1".dump.log"
 echo >> $1".dump.log"
 
-echo "Dumping data to \""$1".data\"..." >> $1".dump.log"
-echo "Dumping data to \""$1".data\"..."
 mkdir $1".data"
 chmod o+w $1".data"
 
+echo "Dumping data to \""$1".data\"..."
 tables=$(mysql --execute "Show full tables where Table_type = 'BASE TABLE';" $1 |
 		sed "/^Tables/d" |
 		sed "s/\tBASE TABLE//;")
@@ -37,6 +38,10 @@ for table in $tables
 	done
 
 echo "Waiting..."
-( time wait ) 2>> $1".dump.log"
+wait
+
+echo "All tables dumped:" >: $1".dump.log"
+date +%s >> $1".dump.log"
 echo >> $1".dump.log"
+
 exit 0
