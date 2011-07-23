@@ -40,6 +40,9 @@ for table in $tables
 echo "Waiting..."
 wait
 
+chmod go-rw $1"."*
+chmod go-rw $1".data"/*
+
 echo "All tables dumped:" >> $1".dump.log"
 date +%s >> $1".dump.log"
 echo >> $1".dump.log"

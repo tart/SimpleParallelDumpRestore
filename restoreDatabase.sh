@@ -18,6 +18,9 @@ echo "Schema restored:" >> $1".restore.log"
 date +%s >> $1".restore.log"
 echo >> $1".restore.log"
 
+chmod o-r $1"."*
+chmod o-r $1".data"/*
+
 echo "Restoring data from \""$1".data\" to "$2" database..."
 for table in $1".data"/*
 	do
@@ -30,6 +33,9 @@ for table in $1".data"/*
 
 echo "Waiting..."
 wait
+
+chmod o-r $1"."*
+chmod o-r $1".data"/*
 
 echo "All tables restored:" >> $1".restore.log"
 date +%s >> $1".restore.log"
