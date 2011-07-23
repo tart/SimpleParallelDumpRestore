@@ -25,7 +25,6 @@ echo >> $1".dump.log"
 echo "Dumping schema to \""$1".schema.sql\"..."
 mysqldump --no-data --routines $1 > $1".schema.sql" 2>> $1".dump.log"
 
-
 echo "Schema dumped:" >> $1".dump.log"
 date +%s >> $1".dump.log"
 echo >> $1".dump.log"
