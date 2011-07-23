@@ -14,7 +14,7 @@ echo >> $1".restore.log"
 echo "Restoring schema from \""$1".schema.sql\" to "$2" database..."
 mysql $2 < $1".schema.sql" 2>> $1".restore.log"
 
-echo "Schema restored:" :> $1".restore.log"
+echo "Schema restored:" >> $1".restore.log"
 date +%s >> $1".restore.log"
 echo >> $1".restore.log"
 
@@ -31,7 +31,7 @@ for table in $1".data"/*
 echo "Waiting..."
 wait
 
-echo "All tables restored:" >: $1".restore.log"
+echo "All tables restored:" >> $1".restore.log"
 date +%s >> $1".restore.log"
 echo >> $1".restore.log"
 
