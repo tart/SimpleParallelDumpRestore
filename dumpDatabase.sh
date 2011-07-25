@@ -16,9 +16,9 @@ echo "Dump started:" > $1".dump.log"
 date +%s >> $1".dump.log"
 echo >> $1".dump.log"
 
-echo "Master status:"
+echo "Master status:" >> $1".dump.log"
 mysql --execute "Show master status;" >> $1".dump.log" 2>> $1".dump.log"
-echo "Slave status:"
+echo "Slave status:" >> $1".dump.log"
 mysql --execute "Show slave status;" >> $1".dump.log" 2>> $1".dump.log"
 echo >> $1".dump.log"
 
