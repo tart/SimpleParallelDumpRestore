@@ -4,6 +4,8 @@
 
 ./restoreDatabase.sh \<oldDatabaseName\> \<newDatabaseName\>
 
+./scheduledDumpSlaveDatabase.sh \<oldDatabaseName\> \<dumpDirectory\> \<emailAddress\>
+
 ## Description
 
 Dumps and restores all tables parallel in a MySQL database.

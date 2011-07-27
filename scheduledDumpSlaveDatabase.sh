@@ -8,17 +8,23 @@
  ##
 
 dumpDatabaseCommand=$(pwd)"/"${0%scheduledDumpDatabase.sh}"dumpDatabase.sh "$1
+directory=$(date +%u)
 
 cd $2
-if [ -e $(date +%u) ]; then
-	rm -rf $(date +%u)
+if [ ! -d $directory ]; then
+	mkdir $directory
 fi
 
-mkdir $(date +%u)
-cd $(date +%u)
+cd $directory
+rm -rf "/"$1"."*
+touch $1".scheduledDump.error.log"
 
 mysql --execute "Stop slave;" 2>> $1".scheduledDump.error.log"
 $dumpDatabaseCommand
 mysql --execute "Start slave;" 2>> $1".scheduledDump.error.log"
 
-exit 0;
+if [ -s $1".scheduledDump.error.log" ]; then
+	mail -s "Scheduled Dump Slave Database Error" $3 < $1".scheduledDump.error.log"
+fi
+
+exit 0
