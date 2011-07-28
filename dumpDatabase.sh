@@ -13,27 +13,27 @@ if [ -e $1".schema.sql" ]
 	exit 1
 fi
 
-mysql --execute "Show master status" >ls -la $1".dumpDatabase.masterStatus"
-mysql --execute "Show slave status" > $1".dumpDatabase.slaveStatus"
+mysql -e "Show master status" >ls -la $1".dumpDatabase.masterStatus"
+mysql -e "Show slave status" > $1".dumpDatabase.slaveStatus"
 
 if [ -s $table ]
 	then
-	mysql --execute "Stop slave"
+	mysql -e "Stop slave"
 fi
 
 echo "Dumping schema to \""$1".schema.sql\"..."
-mysqldump --no-data --routines $1 > $1".schema.sql"
+mysqldump -dR $1 > $1".schema.sql"
 
 mkdir $1".data"
 chmod o+w $1".data"
 
 echo "Dumping data to \""$1".data\"..."
-tables=$(mysql --execute "Show full tables where Table_type = 'BASE TABLE'" $1 |
+tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 |
 		sed "/^Tables/d" |
 		sed "s/\tBASE TABLE//;")
 for table in $tables
 	do
-		mysql --execute "Set sql_big_selects = 1;
+		mysql -e "Set sql_big_selects = 1;
 				Set query_cache_type = 0;
 				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
 	done
@@ -46,7 +46,7 @@ chmod go-rw $1".data"/*
 
 if [ -s $table ]
 	then
-	mysql --execute "Start slave"
+	mysql -e "Start slave"
 fi
 
 exit 0
