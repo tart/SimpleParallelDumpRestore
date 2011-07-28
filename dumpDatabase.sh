@@ -9,7 +9,7 @@
 
 if [ -e $1".schema.sql" ]
 	then
-	echo $1".schema.sql file exists."
+	echo $1".schema.sql file exists." > /dev/stderr
 	exit 1
 fi
 
