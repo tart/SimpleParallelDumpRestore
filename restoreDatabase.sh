@@ -7,16 +7,16 @@
  # @date        2011-05-23
  ##
 
-echo "Restore started:" > $1".restore.log"
-date +%s >> $1".restore.log"
-echo >> $1".restore.log"
+echo "Restore started:" > $1".restoreDatabase.log"
+date +%s >> $1".restoreDatabase.log"
+echo >> $1".restoreDatabase.log"
 
 echo "Restoring schema from \""$1".schema.sql\" to "$2" database..."
-mysql $2 < $1".schema.sql" 2>> $1".restore.log"
+mysql $2 < $1".schema.sql"
 
-echo "Schema restored:" >> $1".restore.log"
-date +%s >> $1".restore.log"
-echo >> $1".restore.log"
+echo "Schema restored:" >> $1".restoreDatabase.log"
+date +%s >> $1".restoreDatabase.log"
+echo >> $1".restoreDatabase.log"
 
 chmod o-r $1"."*
 chmod o-r $1".data"/*
@@ -27,7 +27,7 @@ for table in $1".data"/*
 		if [ -s $table ]; then
 			mysql --execute "Set unique_checks = 0;
 					Set foreign_key_checks = 0;
-					Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"}";" $2 2>> $1".restore.log" &
+					Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"}";" $2 &
 		fi
 	done
 
@@ -37,8 +37,8 @@ wait
 chmod o-r $1"."*
 chmod o-r $1".data"/*
 
-echo "All tables restored:" >> $1".restore.log"
-date +%s >> $1".restore.log"
-echo >> $1".restore.log"
+echo "All tables restored:" >> $1".restoreDatabase.log"
+date +%s >> $1".restoreDatabase.log"
+echo >> $1".restoreDatabase.log"
 
 exit 0

@@ -12,22 +12,22 @@ if [ -e $1".schema.sql" ]; then
 	exit 1
 fi
 
-echo "Dump started:" > $1".dump.log"
-date +%s >> $1".dump.log"
-echo >> $1".dump.log"
+echo "Dump started:" > $1".dumpDatabase.log"
+date +%s >> $1".dumpDatabase.log"
+echo >> $1".dumpDatabase.log"
 
-echo "Master status:" >> $1".dump.log"
-mysql --execute "Show master status;" >> $1".dump.log" 2>> $1".dump.log"
-echo "Slave status:" >> $1".dump.log"
-mysql --execute "Show slave status;" >> $1".dump.log" 2>> $1".dump.log"
-echo >> $1".dump.log"
+echo "Master status:" >> $1".dumpDatabase.log"
+mysql --execute "Show master status;" >> $1".dumpDatabase.log"
+echo "Slave status:" >> $1".dumpDatabase.log"
+mysql --execute "Show slave status;" >> $1".dumpDatabase.log"
+echo >> $1".dumpDatabase.log"
 
 echo "Dumping schema to \""$1".schema.sql\"..."
-mysqldump --no-data --routines $1 > $1".schema.sql" 2>> $1".dump.log"
+mysqldump --no-data --routines $1 > $1".schema.sql"
 
-echo "Schema dumped:" >> $1".dump.log"
-date +%s >> $1".dump.log"
-echo >> $1".dump.log"
+echo "Schema dumped:" >> $1".dumpDatabase.log"
+date +%s >> $1".dumpDatabase.log"
+echo >> $1".dumpDatabase.log"
 
 mkdir $1".data"
 chmod o+w $1".data"
@@ -40,7 +40,7 @@ for table in $tables
 	do
 		mysql --execute "Set sql_big_selects = 1;
 				Set query_cache_type = 0;
-				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 2>> $1".dump.log" &
+				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
 	done
 
 echo "Waiting..."
@@ -49,8 +49,8 @@ wait
 chmod go-rw $1"."*
 chmod go-rw $1".data"/*
 
-echo "All tables dumped:" >> $1".dump.log"
-date +%s >> $1".dump.log"
-echo >> $1".dump.log"
+echo "All tables dumped:" >> $1".dumpDatabase.log"
+date +%s >> $1".dumpDatabase.log"
+echo >> $1".dumpDatabase.log"
 
 exit 0

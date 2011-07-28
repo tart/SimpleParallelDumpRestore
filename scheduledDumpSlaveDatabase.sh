@@ -17,14 +17,14 @@ fi
 
 cd $directory
 rm -rf "/"$1"."*
-touch $1".scheduledDump.error.log"
+touch $1".scheduledDumpSlaveDatabase.error.log"
 
-mysql --execute "Stop slave;" 2>> $1".scheduledDump.error.log"
-$dumpDatabaseCommand
-mysql --execute "Start slave;" 2>> $1".scheduledDump.error.log"
+mysql --execute "Stop slave;" 2>> $1".scheduledDumpSlaveDatabase.error.log"
+$dumpDatabaseCommand 2>> $1".scheduledDumpSlaveDatabase.error.log"
+mysql --execute "Start slave;" 2>> $1".scheduledDumpSlaveDatabase.error.log"
 
 if [ -s $1".scheduledDump.error.log" ]; then
-	mail -s "Scheduled Dump Slave Database Error" $3 < $1".scheduledDump.error.log"
+	mail -s "Scheduled Dump Slave Database Error" $3 < $1".scheduledDumpSlaveDatabase.error.log"
 fi
 
 exit 0
