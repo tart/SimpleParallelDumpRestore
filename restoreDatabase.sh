@@ -7,16 +7,8 @@
  # @date        2011-05-23
  ##
 
-echo "Restore started:" > $1".restoreDatabase.log"
-date +%s >> $1".restoreDatabase.log"
-echo >> $1".restoreDatabase.log"
-
 echo "Restoring schema from \""$1".schema.sql\" to "$2" database..."
 mysql $2 < $1".schema.sql"
-
-echo "Schema restored:" >> $1".restoreDatabase.log"
-date +%s >> $1".restoreDatabase.log"
-echo >> $1".restoreDatabase.log"
 
 chmod o-r $1"."*
 chmod o-r $1".data"/*
@@ -36,9 +28,5 @@ wait
 
 chmod o-r $1"."*
 chmod o-r $1".data"/*
-
-echo "All tables restored:" >> $1".restoreDatabase.log"
-date +%s >> $1".restoreDatabase.log"
-echo >> $1".restoreDatabase.log"
 
 exit 0

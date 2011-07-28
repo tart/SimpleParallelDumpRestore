@@ -7,33 +7,28 @@
  # @date        2011-05-23
  ##
 
-if [ -e $1".schema.sql" ]; then
+if [ -e $1".schema.sql" ]
+	then
 	echo $1".schema.sql file exists."
 	exit 1
 fi
 
-echo "Dump started:" > $1".dumpDatabase.log"
-date +%s >> $1".dumpDatabase.log"
-echo >> $1".dumpDatabase.log"
+mysql --execute "Show master status" >ls -la $1".dumpDatabase.masterStatus"
+mysql --execute "Show slave status" > $1".dumpDatabase.slaveStatus"
 
-echo "Master status:" >> $1".dumpDatabase.log"
-mysql --execute "Show master status;" >> $1".dumpDatabase.log"
-echo "Slave status:" >> $1".dumpDatabase.log"
-mysql --execute "Show slave status;" >> $1".dumpDatabase.log"
-echo >> $1".dumpDatabase.log"
+if [ -s $table ]
+	then
+	mysql --execute "Stop slave"
+fi
 
 echo "Dumping schema to \""$1".schema.sql\"..."
 mysqldump --no-data --routines $1 > $1".schema.sql"
-
-echo "Schema dumped:" >> $1".dumpDatabase.log"
-date +%s >> $1".dumpDatabase.log"
-echo >> $1".dumpDatabase.log"
 
 mkdir $1".data"
 chmod o+w $1".data"
 
 echo "Dumping data to \""$1".data\"..."
-tables=$(mysql --execute "Show full tables where Table_type = 'BASE TABLE';" $1 |
+tables=$(mysql --execute "Show full tables where Table_type = 'BASE TABLE'" $1 |
 		sed "/^Tables/d" |
 		sed "s/\tBASE TABLE//;")
 for table in $tables
@@ -49,8 +44,9 @@ wait
 chmod go-rw $1"."*
 chmod go-rw $1".data"/*
 
-echo "All tables dumped:" >> $1".dumpDatabase.log"
-date +%s >> $1".dumpDatabase.log"
-echo >> $1".dumpDatabase.log"
+if [ -s $table ]
+	then
+	mysql --execute "Start slave"
+fi
 
 exit 0
