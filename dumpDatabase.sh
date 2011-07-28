@@ -13,10 +13,10 @@ if [ -e $1".schema.sql" ]
 	exit 1
 fi
 
-mysql -e "Show master status" > $1".dumpDatabase.masterStatus"
-mysql -e "Show slave status" > $1".dumpDatabase.slaveStatus"
+mysql -e "Show master status" > $1".masterStatus"
+mysql -e "Show slave status" > $1".slaveStatus"
 
-if [ -s $1".dumpDatabase.slaveStatus" ]
+if [ -s $1".slaveStatus" ]
 	then
 	mysql -e "Stop slave"
 fi
@@ -44,7 +44,7 @@ wait
 chmod go-rw $1"."*
 chmod go-rw $1".data"/*
 
-if [ -s $1".dumpDatabase.slaveStatus" ]
+if [ -s $1".slaveStatus" ]
 	then
 	mysql -e "Start slave"
 fi
