@@ -7,11 +7,11 @@
  # @date        2011-05-23
  ##
 
-for existentFile in $1"."*
-	do
-		echo $existentFile" already exists." > /dev/stderr
+if [ -e $1"."* ]
+	then
+		echo "File matching \""$1".*\" exists." > /dev/stderr
 		exit 1
-	done
+	fi
 
 echo "Stopping slave..."
 mysql -e "Stop slave"
@@ -45,14 +45,14 @@ mysql -e "Show slave status" > $1".slaveStatus"
 
 if [ -s $1".masterStatus" ]
 	then
-	echo "Flushing logs..."
-	mysql -e "Flush logs"
-fi
+		echo "Flushing logs..."
+		mysql -e "Flush logs"
+	fi
 
 if [ -s $1".slaveStatus" ]
 	then
-	echo "Starting slave..."
-	mysql -e "Start slave"
-fi
+		echo "Starting slave..."
+		mysql -e "Start slave"
+	fi
 
 exit 0

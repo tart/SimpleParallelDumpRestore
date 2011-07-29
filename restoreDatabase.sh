@@ -18,10 +18,10 @@ for table in $1".data"/*
 	do
 		if [ -s $table ]
 			then
-			mysql -e "Set unique_checks = 0;
-					Set foreign_key_checks = 0;
-					Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"} $2 &
-		fi
+				mysql -e "Set unique_checks = 0;
+						Set foreign_key_checks = 0;
+						Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"} $2 &
+			fi
 	done
 wait
 
