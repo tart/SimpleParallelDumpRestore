@@ -13,17 +13,8 @@ if [ -e $1".schema.sql" ]
 	exit 1
 fi
 
-echo "Dumping master status to \""$1".masterStatus\"..."
-mysql -e "Show master status" > $1".masterStatus"
-
-echo "Dumping slave status to \""$1".masterStatus\"..."
-mysql -e "Show slave status" > $1".slaveStatus"
-
-if [ -s $1".slaveStatus" ]
-	then
-	echo "Stopping slave..."
-	mysql -e "Stop slave"
-fi
+echo "Stopping slave..."
+mysql -e "Stop slave"
 
 echo "Dumping schema to \""$1".schema.sql\"..."
 mysqldump -dR $1 > $1".schema.sql"
@@ -45,6 +36,18 @@ wait
 
 chmod go-rw $1"."*
 chmod go-rw $1".data"/*
+
+echo "Dumping master status to \""$1".masterStatus\"..."
+mysql -e "Show master status" > $1".masterStatus"
+
+echo "Dumping slave status to \""$1".masterStatus\"..."
+mysql -e "Show slave status" > $1".slaveStatus"
+
+if [ -s $1".masterStatus" ]
+	then
+	echo "Flushing logs..."
+	mysql -e "Flush logs"
+fi
 
 if [ -s $1".slaveStatus" ]
 	then
