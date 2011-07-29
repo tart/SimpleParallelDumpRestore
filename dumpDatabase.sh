@@ -13,11 +13,15 @@ if [ -e $1".schema.sql" ]
 	exit 1
 fi
 
+echo "Dumping master status to \""$1".masterStatus\"..."
 mysql -e "Show master status" > $1".masterStatus"
+
+echo "Dumping slave status to \""$1".masterStatus\"..."
 mysql -e "Show slave status" > $1".slaveStatus"
 
 if [ -s $1".slaveStatus" ]
 	then
+	echo "Stopping slave..."
 	mysql -e "Stop slave"
 fi
 
@@ -37,8 +41,6 @@ for table in $tables
 				Set query_cache_type = 0;
 				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
 	done
-
-echo "Waiting..."
 wait
 
 chmod go-rw $1"."*
@@ -46,6 +48,7 @@ chmod go-rw $1".data"/*
 
 if [ -s $1".slaveStatus" ]
 	then
+	echo "Starting slave..."
 	mysql -e "Start slave"
 fi
 

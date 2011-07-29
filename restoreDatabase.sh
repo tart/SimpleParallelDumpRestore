@@ -23,8 +23,6 @@ for table in $1".data"/*
 					Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"} $2 &
 		fi
 	done
-
-echo "Waiting..."
 wait
 
 chmod o-r $1"."*
