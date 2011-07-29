@@ -8,10 +8,10 @@
  ##
 
 for existentFile in $1"."*
-	then
-	echo $existentFile" already exists." > /dev/stderr
-	exit 1
-fi
+	do
+		echo $existentFile" already exists." > /dev/stderr
+		exit 1
+	done
 
 echo "Stopping slave..."
 mysql -e "Stop slave"
