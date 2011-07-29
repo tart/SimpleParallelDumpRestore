@@ -13,7 +13,7 @@ if [ -e $1"."* ]
 		exit 1
 	fi
 
-echo "Stopping slave..."
+echo "Stopping slave activity..."
 mysql -e "Stop slave"
 
 echo "Dumping schema to \""$1".schema.sql\"..."
@@ -40,7 +40,7 @@ chmod go-rw $1".data"/*
 echo "Dumping master status to \""$1".masterStatus\"..."
 mysql -e "Show master status" > $1".masterStatus"
 
-echo "Dumping slave status to \""$1".masterStatus\"..."
+echo "Dumping slave status to \""$1".slaveStatus\"..."
 mysql -e "Show slave status" > $1".slaveStatus"
 
 if [ -s $1".masterStatus" ]
@@ -51,7 +51,7 @@ if [ -s $1".masterStatus" ]
 
 if [ -s $1".slaveStatus" ]
 	then
-		echo "Starting slave..."
+		echo "Starting slave activity..."
 		mysql -e "Start slave"
 	fi
 
