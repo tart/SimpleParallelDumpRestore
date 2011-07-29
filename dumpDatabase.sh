@@ -7,9 +7,9 @@
  # @date        2011-05-23
  ##
 
-if [ -e $1".schema.sql" ]
+for existentFile in $1"."*
 	then
-	echo $1".schema.sql file exists." > /dev/stderr
+	echo $existentFile" already exists." > /dev/stderr
 	exit 1
 fi
 
