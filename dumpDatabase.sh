@@ -19,10 +19,9 @@ mysql -e "Stop slave"
 echo "Dumping schema to \""$1".schema.sql\"..."
 mysqldump -dR $1 > $1".schema.sql"
 
+echo "Dumping data to \""$1".data\"..."
 mkdir $1".data"
 chmod o+w $1".data"
-
-echo "Dumping data to \""$1".data\"..."
 tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 |
 		sed "/^Tables/d" |
 		sed "s/\tBASE TABLE//;")
@@ -33,9 +32,6 @@ for table in $tables
 				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
 	done
 wait
-
-chmod go-rw $1"."*
-chmod go-rw $1".data"/*
 
 echo "Dumping master status to \""$1".masterStatus\"..."
 mysql -e "Show master status" > $1".masterStatus"
