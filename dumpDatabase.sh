@@ -7,30 +7,31 @@
  # @date        2011-05-23
  ##
 
-echo "Stopping slave activity..."
 mysql -e "Stop slave"
+echo "Slave activity stopped."
 
 for schema in $(mysql -e "Show schemas" | sed 1d)
 	do
 		$(pwd)/${0%dumpDatabase.sh}dumpSchema.sh $schema &
 	done
+echo "Dump commands sent."
 
-echo "Dumping master status to \"masterStatus\"..."
 mysql -e "Show master status" > masterStatus
+echo "Master status dumped to \"./masterStatus\"."
 
-echo "Dumping slave status to \"slaveStatus\"..."
 mysql -e "Show slave status" > slaveStatus
+echo "Slave status dumped to \"./slaveStatus\"."
 
 if [ -s masterStatus ]
 	then
-		echo "Flushing logs..."
 		mysql -e "Flush logs"
+		echo "Logs flushed."
 	fi
 
 if [ -s slaveStatus ]
 	then
-		echo "Starting slave activity..."
 		mysql -e "Start slave"
+		echo "Slave activity started."
 	fi
 
 wait
