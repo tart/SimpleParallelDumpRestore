@@ -1,8 +1,10 @@
 ## Usage:
 
-./dumpDatabase.sh \<databaseName\>
+./dumpDatabase.sh
 
-./restoreDatabase.sh \<oldDatabaseName\> \<newDatabaseName\>
+./dumpSchema.sh \<schemaName\>
+
+./restoreSchema.sh \<oldSchemaName\> \<newSchemaName\>
 
 ## Description
 

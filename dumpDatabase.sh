@@ -7,48 +7,31 @@
  # @date        2011-05-23
  ##
 
-if [ -e $1"."* ]
-	then
-		echo "File matching \""$1".*\" exists." > /dev/stderr
-		exit 1
-	fi
-
 echo "Stopping slave activity..."
 mysql -e "Stop slave"
 
-echo "Dumping schema to \""$1".schema.sql\"..."
-mysqldump -dR $1 > $1".schema.sql"
-
-echo "Dumping data to \""$1".data\"..."
-mkdir $1".data"
-chmod o+w $1".data"
-tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 |
-		sed "/^Tables/d" |
-		sed "s/\tBASE TABLE//;")
-for table in $tables
+for schema in $(mysql -e "Show schemas" | sed 1d)
 	do
-		mysql -e "Set sql_big_selects = 1;
-				Set query_cache_type = 0;
-				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
+		$(pwd)/${0%dumpDatabase.sh}dumpSchema.sh $schema &
 	done
-wait
 
-echo "Dumping master status to \""$1".masterStatus\"..."
-mysql -e "Show master status" > $1".masterStatus"
+echo "Dumping master status to \"masterStatus\"..."
+mysql -e "Show master status" > masterStatus
 
-echo "Dumping slave status to \""$1".slaveStatus\"..."
-mysql -e "Show slave status" > $1".slaveStatus"
+echo "Dumping slave status to \"slaveStatus\"..."
+mysql -e "Show slave status" > slaveStatus
 
-if [ -s $1".masterStatus" ]
+if [ -s masterStatus ]
 	then
 		echo "Flushing logs..."
 		mysql -e "Flush logs"
 	fi
 
-if [ -s $1".slaveStatus" ]
+if [ -s slaveStatus ]
 	then
 		echo "Starting slave activity..."
 		mysql -e "Start slave"
 	fi
 
+wait
 exit 0
