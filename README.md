@@ -2,7 +2,7 @@
 
 ./dumpDatabase.sh \<databaseName\>
 
-./restoreDatabase.sh \<oldDatabaseName\> \<newDatabaseName\>
+./restoreSchema.sh \<oldSchemaName\> \<newSchemaName\>
 
 ## Description
 
