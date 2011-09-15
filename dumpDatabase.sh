@@ -29,19 +29,19 @@ for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 | 
 				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
 	done
 
-echo "Dumping master status to \""$1".masterStatus\"..."
-mysql -e "Show master status" > $1".masterStatus"
+echo "Dumping master status..."
+mysql -e "Show master status" > masterStatus
 
-echo "Dumping slave status to \""$1".slaveStatus\"..."
-mysql -e "Show slave status" > $1".slaveStatus"
+echo "Dumping slave status..."
+mysql -e "Show slave status" > slaveStatus
 
-if [ -s $1".masterStatus" ]
+if [ -s masterStatus ]
 	then
 		echo "Flushing logs..."
 		mysql -e "Flush logs"
 	fi
 
-if [ -s $1".slaveStatus" ]
+if [ -s slaveStatus ]
 	then
 		echo "Starting slave activity..."
 		mysql -e "Start slave"
