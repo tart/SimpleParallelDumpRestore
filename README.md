@@ -1,6 +1,6 @@
 ## Usage:
 
-./dumpDatabase.sh \<databaseName\>
+./dumpDatabase.sh
 
 ./restoreSchema.sh \<oldSchemaName\> \<newSchemaName\>
 

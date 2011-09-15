@@ -10,18 +10,14 @@
 if [ -e slaveStatus ]
     then
         echo "File matching \"slaveStatus\" exists." > /dev/stderr
+
         exit 1
     fi
 
 if [ -e masterStatus ]
     then
         echo "File matching \"masterStatus\" exists." > /dev/stderr
-        exit 1
-    fi
 
-if [ -e $1"."* ]
-    then
-        echo "File matching \""$1".*\" exists." > /dev/stderr
         exit 1
     fi
 
@@ -32,17 +28,27 @@ if [ $slaveRunning = "ON" ]
         mysql -e "Stop slave"
     fi
 
-echo "Dumping data model to \""$1".dataModel.sql\"..."
-mysqldump -dR $1 > $1".dataModel.sql"
-
-echo "Dumping data to \""$1".data\"..."
-mkdir $1".data"
-chmod o+w $1".data"
-for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 | sed 1d | cut -f 1)
+for schema in $(mysql -e "Show schemas" | sed 1d)
     do
-        mysql -e "Set sql_big_selects = 1;
-                Set query_cache_type = 0;
-                Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
+        if [ -e $schema"."* ]
+            then
+                echo "File matching \""$schema".*\" exists." > /dev/stderr
+
+                exit 1
+            fi
+
+        echo "Dumping data model of "$schema"..."
+        mysqldump -dR $schema > $schema".dataModel.sql"
+
+        echo "Dumping data of "$schema"..."
+        mkdir $schema".data"
+        chmod o+w $schema".data"
+        for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $schema | sed 1d | cut -f 1)
+            do
+                mysql -e "Set sql_big_selects = 1;
+                        Set query_cache_type = 0;
+                        Select * from "$table" into outfile '"$(pwd)/$schema".data"/$table"'" $schema &
+            done
     done
 
 echo "Dumping master status..."
