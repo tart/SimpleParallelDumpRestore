@@ -54,11 +54,8 @@ for schema in $(mysql -e "Show schemas" | sed 1d)
 echo "Dumping master status..."
 mysql -e "Show master status" > masterStatus
 
-if [ -s masterStatus ]
-    then
-        echo "Flushing logs..."
-        mysql -e "Flush logs"
-    fi
+echo "Flushing logs..."
+mysql -e "Flush logs"
 
 if [ $slaveRunning = "ON" ]
     then
