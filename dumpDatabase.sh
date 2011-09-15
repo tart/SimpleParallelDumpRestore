@@ -39,29 +39,29 @@ echo "Dumping data to \""$1".data\"..."
 mkdir $1".data"
 chmod o+w $1".data"
 for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 | sed 1d | cut -f 1)
-	do
-		mysql -e "Set sql_big_selects = 1;
-				Set query_cache_type = 0;
-				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
-	done
+    do
+        mysql -e "Set sql_big_selects = 1;
+                Set query_cache_type = 0;
+                Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
+    done
 
 echo "Dumping master status..."
 mysql -e "Show master status" > masterStatus
 
 if [ -s masterStatus ]
-	then
-		echo "Flushing logs..."
-		mysql -e "Flush logs"
-	fi
+    then
+        echo "Flushing logs..."
+        mysql -e "Flush logs"
+    fi
 
 if [ $slaveRunning = "ON" ]
-	then
+    then
         echo "Dumping slave status..."
         mysql -e "Show slave status" > slaveStatus
 
-		echo "Starting slave activity..."
-		mysql -e "Start slave"
-	fi
+        echo "Starting slave activity..."
+        mysql -e "Start slave"
+    fi
 
 wait
 exit 0
