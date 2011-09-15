@@ -22,10 +22,7 @@ mysqldump -dR $1 > $1".dataModel.sql"
 echo "Dumping data to \""$1".data\"..."
 mkdir $1".data"
 chmod o+w $1".data"
-tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 |
-		sed "/^Tables/d" |
-		sed "s/\tBASE TABLE//;")
-for table in $tables
+for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 | sed 1d | cut -f 1)
 	do
 		mysql -e "Set sql_big_selects = 1;
 				Set query_cache_type = 0;
