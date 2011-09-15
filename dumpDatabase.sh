@@ -13,19 +13,24 @@ if [ -e slaveStatus ]
         exit 1
     fi
 
-slaveRunning=$(mysql -e "Show status like 'Slave_running'" | sed 1d | cut -f 2)
+if [ -e masterStatus ]
+    then
+        echo "File matching \"masterStatus\" exists." > /dev/stderr
+        exit 1
+    fi
 
+if [ -e $1"."* ]
+    then
+        echo "File matching \""$1".*\" exists." > /dev/stderr
+        exit 1
+    fi
+
+slaveRunning=$(mysql -e "Show status like 'Slave_running'" | sed 1d | cut -f 2)
 if [ $slaveRunning = "ON" ]
     then
         echo "Stopping slave activity..."
         mysql -e "Stop slave"
     fi
-
-if [ -e $1"."* ]
-	then
-		echo "File matching \""$1".*\" exists." > /dev/stderr
-		exit 1
-	fi
 
 echo "Dumping data model to \""$1".dataModel.sql\"..."
 mysqldump -dR $1 > $1".dataModel.sql"
