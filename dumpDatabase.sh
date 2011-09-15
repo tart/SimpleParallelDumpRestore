@@ -45,7 +45,7 @@ if [ $slaveRunning = "ON" ]
 for schema in $(mysql -e "Show schemas" | sed 1d)
     do
         echo "Dumping data model of "$schema"..."
-        mysqldump -dR $schema > $schema".dataModel.sql"
+        mysqldump -dR --skip-lock-tables $schema > $schema".dataModel.sql"
 
         echo "Dumping data of "$schema"..."
         mkdir $schema".data"
