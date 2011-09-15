@@ -21,6 +21,20 @@ if [ -e masterStatus ]
         exit 1
     fi
 
+if [ -e *.data ]
+    then
+        echo "File matching \"*.data\" exists." > /dev/stderr
+
+        exit 1
+    fi
+
+if [ -e *.sql ]
+    then
+        echo "File matching \"*.sql\" exists." > /dev/stderr
+
+        exit 1
+    fi
+    
 slaveRunning=$(mysql -e "Show status like 'Slave_running'" | sed 1d | cut -f 2)
 if [ $slaveRunning = "ON" ]
     then
@@ -30,13 +44,6 @@ if [ $slaveRunning = "ON" ]
 
 for schema in $(mysql -e "Show schemas" | sed 1d)
     do
-        if [ -e $schema"."* ]
-            then
-                echo "File matching \""$schema".*\" exists." > /dev/stderr
-
-                exit 1
-            fi
-
         echo "Dumping data model of "$schema"..."
         mysqldump -dR $schema > $schema".dataModel.sql"
 
