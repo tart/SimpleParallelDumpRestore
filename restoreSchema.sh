@@ -20,6 +20,6 @@ for table in $1".data"/*
 						Load data infile '"$(pwd)/$table"' into table "${table#$1".data/"} $2 &
 			fi
 	done
+	
 wait
-
 exit 0

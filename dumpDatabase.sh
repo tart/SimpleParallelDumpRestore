@@ -28,7 +28,6 @@ for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $1 | 
 				Set query_cache_type = 0;
 				Select * from "$table" into outfile '"$(pwd)/$1".data"/$table"'" $1 &
 	done
-wait
 
 echo "Dumping master status to \""$1".masterStatus\"..."
 mysql -e "Show master status" > $1".masterStatus"
@@ -48,4 +47,5 @@ if [ -s $1".slaveStatus" ]
 		mysql -e "Start slave"
 	fi
 
+wait
 exit 0
