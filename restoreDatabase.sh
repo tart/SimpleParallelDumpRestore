@@ -7,8 +7,8 @@
  # @date        2011-05-23
  ##
 
-echo "Restoring schema from \""$1".schema.sql\" to "$2" database..."
-mysql $2 < $1".schema.sql"
+echo "Restoring data model from \""$1".dataModel.sql\" to "$2" database..."
+mysql $2 < $1".dataModel.sql"
 
 echo "Restoring data from \""$1".data\" to "$2" database..."
 for table in $1".data"/*

@@ -16,8 +16,8 @@ if [ -e $1"."* ]
 echo "Stopping slave activity..."
 mysql -e "Stop slave"
 
-echo "Dumping schema to \""$1".schema.sql\"..."
-mysqldump -dR $1 > $1".schema.sql"
+echo "Dumping data model to \""$1".dataModel.sql\"..."
+mysqldump -dR $1 > $1".dataModel.sql"
 
 echo "Dumping data to \""$1".data\"..."
 mkdir $1".data"
