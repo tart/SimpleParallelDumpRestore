@@ -7,74 +7,69 @@
  # @date        2011-05-23
  ##
 
-if [ -e slaveStatus ]
-    then
-        echo "File matching \"slaveStatus\" exists." > /dev/stderr
+if [ -e slaveStatus ]; then
+    echo "File matching \"slaveStatus\" exists." > /dev/stderr
 
-        exit 1
-    fi
+    exit 1
+fi
 
-if [ -e masterStatus ]
-    then
-        echo "File matching \"masterStatus\" exists." > /dev/stderr
+if [ -e masterStatus ]; then
+    echo "File matching \"masterStatus\" exists." > /dev/stderr
 
-        exit 1
-    fi
+    exit 1
+fi
 
-if [ -e *.dataModel.sql ]
-    then
-        echo "File matching \"*.dataModel.sql\" exists." > /dev/stderr
+if [ -e *.dataModel.sql ]; then
+    echo "File matching \"*.dataModel.sql\" exists." > /dev/stderr
 
-        exit 1
-    fi
+    exit 1
+fi
 
-if [ -e *.data ]
-    then
-        echo "File matching \"*.data\" exists." > /dev/stderr
+if [ -e *.data ]; then
+    echo "File matching \"*.data\" exists." > /dev/stderr
 
-        exit 1
-    fi
+    exit 1
+fi
 
 slaveRunning=$(mysql -e "Show status like 'Slave_running'" | sed 1d | cut -f 2)
-if [ $slaveRunning = "ON" ]
-    then
-        echo "Stopping slave SQL thread..."
-        mysql -e "Stop slave sql_thread"
-    fi
+if [ $slaveRunning = "ON" ]; then
+    echo "Stopping slave SQL thread..."
+    mysql -e "Stop slave sql_thread"
+fi
 
 echo "Locking tables..."
 mysql -e "Flush tables with read lock"
 
-for schema in $(mysql -e "Show schemas" | sed 1d)
-    do
-        echo "Dumping data model of "$schema"..."
-        mysqldump -dR --skip-lock-tables $schema > $schema".dataModel.sql"
+for schema in $(mysql -e "Show schemas" | sed 1d); do
+    echo "Dumping data model of $schema..."
+    mysqldump -dR --skip-lock-tables $schema > $schema.dataModel.sql
 
-        echo "Dumping data of "$schema"..."
-        mkdir $schema".data"
-        chmod o+w $schema".data"
-        for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $schema | sed 1d | cut -f 1)
-            do
-                mysql -e "Set sql_big_selects = 1;
-                        Set query_cache_type = 0;
-                        Select * from "$table" into outfile '"$(pwd)/$schema".data"/$table"'" $schema &
-            done
+    echo "Dumping data of $schema..."
+    mkdir $schema.data
+    chmod o+w $schema.data
+    for table in $(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $schema | sed 1d | cut -f 1); do
+        mysql -e "Set sql_big_selects = 1;
+                Set query_cache_type = 0;
+                Select * from $schema.$table into outfile '"$(pwd)/$schema".data"/$table"'"  &
     done
+done
 
-echo "Dumping master status..."
-mysql -e "Show master status" > masterStatus
+echo "Unlocking tables..."
+mysql -e "Unlock tables"
 
 echo "Flushing logs..."
 mysql -e "Flush logs"
 
-echo "Unlocking tables..."
-mysql -e "Unlock tables"
-        echo "Dumping slave status..."
-        mysql -e "Show slave status" > slaveStatus
+echo "Dumping master status..."
+mysql -e "Show master status" > masterStatus
 
-        echo "Starting slave activity..."
-        mysql -e "Start slave"
-    fi
+if [ $slaveRunning = "ON" ]; then
+    echo "Dumping slave status..."
+    mysql -e "Show slave status" > slaveStatus
+
+    echo "Starting slave activity..."
+    mysql -e "Start slave"
+fi
 
 wait
 exit 0
