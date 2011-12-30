@@ -42,6 +42,9 @@ if [ $slaveRunning = "ON" ]
         mysql -e "Stop slave"
     fi
 
+echo "Locking tables..."
+mysql -e "Flush tables with read lock"
+
 for schema in $(mysql -e "Show schemas" | sed 1d)
     do
         echo "Dumping data model of "$schema"..."
@@ -64,6 +67,9 @@ mysql -e "Show master status" > masterStatus
 echo "Flushing logs..."
 mysql -e "Flush logs"
 
+echo "Unlocking tables..."
+mysql -e "Unlock tables" 2>> scheduledDatabaseBackup.error.log
+	
 if [ $slaveRunning = "ON" ]
     then
         echo "Dumping slave status..."
