@@ -88,6 +88,5 @@ if [ $slaveRunning = "ON" ]; then
     mysql -e "Start slave"
 fi
 
-wait
 exit 0
 
