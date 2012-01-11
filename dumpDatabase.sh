@@ -64,7 +64,7 @@ for schema in $(mysql -e "Show schemas" | sed 1d | sed /_schema$/d); do
     echo "Dumping data of $schema..."
     mkdir $schema.data
     chmod o+w $schema.data
-    parallel $jobs"mysql -e \"Select * from {} into outfile '\"$(pwd)/$schema.data/{}\"'\" $schema" ::: $tables
+    parallel $jobs"mysql -e \"Select * from {} into outfile '\"$(pwd)/$schema.data/{}\"' character set 'utf8'\" $schema" ::: $tables
 done
 
 #
