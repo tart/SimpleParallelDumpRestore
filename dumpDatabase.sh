@@ -43,7 +43,7 @@ fi
 #
 
 slaveRunning=$(mysql -e "Show status like 'Slave_running'" | sed 1d | cut -f 2)
-if [ $slaveRunning = "ON" ]; then
+if [ "$slaveRunning" = "ON" ]; then
     echo "Stopping slave SQL thread..."
     mysql -e "Stop slave sql_thread"
 fi
@@ -80,7 +80,7 @@ mysql -e "Flush logs"
 echo "Dumping master status..."
 mysql -e "Show master status" > masterStatus
 
-if [ $slaveRunning = "ON" ]; then
+if [ "$slaveRunning" = "ON" ]; then
     echo "Dumping slave status..."
     mysql -e "Show slave status" > slaveStatus
 
@@ -89,4 +89,3 @@ if [ $slaveRunning = "ON" ]; then
 fi
 
 exit 0
-
