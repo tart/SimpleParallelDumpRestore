@@ -26,18 +26,6 @@ while getopts "j:" opt; do
 	esac
 done
 
-if [ -e slaveStatus ]; then
-    echo "File matching \"slaveStatus\" exists." > /dev/stderr
-
-    exit 1
-fi
-
-if [ -e masterStatus ]; then
-    echo "File matching \"masterStatus\" exists." > /dev/stderr
-
-    exit 1
-fi
-
 #
 # Preparing the database server
 #

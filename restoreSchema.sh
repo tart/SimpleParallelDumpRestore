@@ -26,6 +26,10 @@ while getopts "j:" opt; do
 	esac
 done
 
+#
+# Checking files
+#
+
 if [ ! -f $1.dataModel.sql ]; then
     echo "File matching \"$1.dataModel.sql\" does not exists." > /dev/stderr
 
