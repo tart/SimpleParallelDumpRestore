@@ -42,7 +42,8 @@ fi
 # Preparing the database server
 #
 
-slaveRunning=$(mysql -e "Show status like 'Slave_running'" | sed 1d | cut -f 2)
+slaveRunning=$(mysql -e "Show status like 'Slave_running'" |
+        sed 1d | cut -f 2)
 if [ "$slaveRunning" = "ON" ]; then
     echo "Stopping slave SQL thread..."
     mysql -e "Stop slave sql_thread"
@@ -56,7 +57,8 @@ mysql -e "Flush tables with read lock"
 #
 
 for schema in $(mysql -e "Show schemas" | sed 1d | sed /_schema$/d); do
-    tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $schema | sed 1d | cut -f 1)
+    tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $schema |
+            sed 1d | cut -f 1)
 
     echo "Dumping data model of $schema..."
     mysqldump -dR $schema > $schema.dataModel.sql
@@ -64,7 +66,9 @@ for schema in $(mysql -e "Show schemas" | sed 1d | sed /_schema$/d); do
     echo "Dumping data of $schema..."
     mkdir $schema.data
     chmod o+w $schema.data
-    parallel $jobs"mysql -e \"Select * from {} into outfile '\"$(pwd)/$schema.data/{}\"' character set 'utf8'\" $schema" ::: $tables
+    parallel $jobs"mysql -e \"Select * from {} \
+            into outfile '$(pwd)/$schema.data/{}' character set 'utf8' \
+            fields terminated by ',' enclosed by '\\\"'\" $schema" ::: $tables
 done
 
 #
