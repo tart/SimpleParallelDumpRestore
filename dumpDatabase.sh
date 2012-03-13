@@ -46,17 +46,18 @@ mysql -e "Flush tables with read lock"
 
 for schema in $(mysql -e "Show schemas" | sed 1d | sed /_schema$/d); do
     tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $schema |
-            sed 1d | cut -f 1)
-
-    echo "Dumping data model of $schema..."
-    mysqldump -dR $schema > $schema.dataModel.sql
-
-    echo "Dumping data of $schema..."
-    mkdir $schema.data
-    chmod o+w $schema.data
-    parallel $jobs"mysql -e \"Select * from {} \
+            sed 1d | sed /_log$/d | cut -f 1)
+    if [ $tables ]; then
+	    echo "Dumping data model of $schema..."
+	    mysqldump -dR $schema > $schema.dataModel.sql
+	
+	    echo "Dumping data of $schema..."
+	    mkdir $schema.data
+	    chmod o+w $schema.data
+	    parallel $jobs"mysql -e \"Select * from {} \
             into outfile '$(pwd)/$schema.data/{}' character set 'utf8' \
             fields terminated by ',' enclosed by '\\\"'\" $schema" ::: $tables
+    fi
 done
 
 #
