@@ -47,7 +47,7 @@ mysql -e "Flush tables with read lock"
 for schema in $(mysql -e "Show schemas" | sed 1d | sed /_schema$/d); do
     tables=$(mysql -e "Show full tables where Table_type = 'BASE TABLE'" $schema |
             sed 1d | sed /_log$/d | cut -f 1)
-    if [ $tables ]; then
+    if [ "$tables" ]; then
 	    echo "Dumping data model of $schema..."
 	    mysqldump -dR $schema > $schema.dataModel.sql
 	
