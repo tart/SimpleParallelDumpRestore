@@ -55,7 +55,7 @@ for schema in $(mysql -e "Show schemas" | sed 1d | sed /_schema$/d); do
 	    mkdir $schema.data
 	    chmod o+w $schema.data
 	    parallel $jobs"mysql -e \"Select * from {} \
-            into outfile '$(pwd)/$schema.data/{}' character set 'utf8' \
+            into outfile '$(pwd)/$schema.data/{}.csv' character set 'utf8' \
             fields terminated by ',' enclosed by '\\\"'\" $schema" ::: $tables
     fi
 done
