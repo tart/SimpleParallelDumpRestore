@@ -1,11 +1,18 @@
 #!/bin/bash
- ##
- # Tart Database Operations
- # Simple MySQL Parallel Dump & Restore
- #
- # @author      Emre Hasegeli <hasegeli@tart.com.tr>
- # @date        2011-05-23
- ##
+##
+# SimpleParallelDumpRestore - Simple scripts to dump and restore data in parallel as comma-seperated values (CSV)
+#
+# Copyright (c) 2011-2012, Tart İnternet Teknolojileri AŞ
+#
+# Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
+# granted, provided that the above copyright notice and this permission notice appear in all copies.
+# 
+# The software is provided "as is" and the author disclaims all warranties with regard to the software including all
+# implied warranties of merchantability and fitness. In no event shall the author be liable for any special, direct,
+# indirect, or consequential damages or any damages whatsoever resulting from loss of use, data or profits, whether
+# in an action of contract, negligence or other tortious action, arising out of or in connection with the use or
+# performance of this software.
+##
 
 #
 # Fetching the parameters
@@ -19,7 +26,7 @@ while getopts "j:" opt; do
 			echo "$0 -h"
 			echo "$0 [-j jobs]"
 			echo "Source:"
-			echo "github.com/tart/SimpleMySQLParallelDumpRestore"
+			echo "github.com/tart/SimpleParallelDumpRestore"
 			exit 1 ;;
 		\? )	echo "Wrong parameter." > /dev/stderr
 			exit 1
