@@ -2,18 +2,26 @@ Simple scripts to dump and restore data in parallel as comma-seperated values (C
 
 ## Usage:
 
-./dumpMySQLDatabase.sh
+dumpMySQL.sh \<mysql arguments\> 
 
-./restoreMySQLSchema.sh \<oldSchemaName\> \<newSchemaName\>
+restoreMySQL.sh \<mysql arguments\> 
+
+restoreAllMySQL.sh \<mysql arguments except schema\> 
+
+restorePostgreSQL.sh \<psql arguments\> 
 
 ## Description
 
-Dumps and restores MySQL databases in parallel using GNU parallel tool [1] and database client executables.
+Dumps and restores MySQL, PostgreSQL databases in parallel using GNU parallel tool [1] and database client executables.
 
-Dump command creates a schema file and one comma separated data file for all tables with "Select ... into outFile"
-statement with "mysql" command. Restore command executes this files using "Load data inFile" statement.
+Dump commands creates data files for all tables in parallel as comma-seperated value (CSV) in the working directory.
+Restore commands restores data files in the working directory in parallel.
 
-MySQL user with sufficient privileges should be specified in "my.cnf".
+"Select ... into outfile" queries are used to dump from and "load data infile" queries are used to restore to MySQL.
+"Copy" queries are used to dump from and restore to PostgreSQL.
+
+dumpAllMySQL.sh is an helper to dump all schemas in a MySQL database with data models. It also locks tables before
+dump, stopes and starts slave SQL thread, saves master and slave status.
 
 [1] http://www.gnu.org/software/parallel
 
