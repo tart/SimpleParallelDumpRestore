@@ -15,5 +15,5 @@
 ##
 
 (test ! $1 || test $1 = "-h" || test $1 = "--help") && echo "Usage: $0 <psql arguments>" && exit 1
-parallel "echo \"Copy {.} from '{}' csv null '\\\\N' escape '\\\\'\" | psql $@" ::: *.csv
+parallel "echo \"Copy {.} from '$(pwd)/{}' csv null '\\\\N' escape '\\\\'\" | psql $@" ::: *.csv
 exit 0
